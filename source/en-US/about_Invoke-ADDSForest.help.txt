@@ -24,12 +24,12 @@ COMMANDS
 
     Private helper functions (not exported):
         New-ADDSForest           - Core forest creation logic
-        Start-PreflightCheck     - Validates platform, elevation, features, disk space
+        Test-PreflightCheck      - Validates platform, elevation, features, disk space
         Install-ADModule         - Installs AD-Domain-Services Windows feature
         Install-ResourceModule   - Installs required PowerShell modules from PSGallery
         Get-SafeModePassword     - Securely obtains DSRM password
         New-EnvPath              - Joins file system paths
-        Test-IfPathExistOrNot    - Batch validates path existence
+        Assert-PathExistence     - Batch validates path existence
         Write-ToLog              - Structured logging wrapper
 
 EXAMPLES

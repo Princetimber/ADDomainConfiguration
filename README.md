@@ -170,18 +170,6 @@ Invoke-Pester -CodeCoverage source/**/*.ps1
 - **QA Tests** (`tests/QA/module.tests.ps1`) - ScriptAnalyzer compliance, changelog format, help documentation quality
 - **Unit Tests** (`tests/Unit/`) - Mirrors source structure with mocked dependencies
 
-## Placeholder Reference
-
-| Placeholder | Description | Example |
-|-------------|-------------|---------|
-| `Invoke-ADDSForest` | Module name | `Invoke-MyModule` |
-| `This module contains carefully curated PowerShell functions for installing a New domain in an AD Forest. It also allows the administrator to securely and efficiently manage logs for audit compliance` | Module description | `Storage management for Windows Server` |
-| `Olamide Olaleye` | Author name | `John Doe` |
-| `Fountview Enterprise Solutions` | Company/organization | `Contoso Ltd` |
-| `26363795-284e-42dd-b28d-af575c5ce98c` | Unique module GUID | `12345678-1234-1234-1234-123456789012` |
-
-Files named `Invoke-ADDSForest.*` will be renamed to your actual module name.
-
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.

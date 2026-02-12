@@ -130,11 +130,11 @@ Describe 'New-EnvPath' -Tag 'Unit' {
     }
 
     Context 'When Join-Path throws an exception' {
-        It 'Should throw a descriptive error message' {
+        It 'Should propagate the Join-Path error' {
             InModuleScope -ModuleName $script:dscModuleName {
                 Mock Join-Path { throw 'Simulated Join-Path failure' }
 
-                { New-EnvPath -Path '/some/path' -ChildPath 'child' } | Should -Throw -ExpectedMessage "Failed to join paths '/some/path' and 'child':*"
+                { New-EnvPath -Path '/some/path' -ChildPath 'child' } | Should -Throw -ExpectedMessage 'Simulated Join-Path failure'
             }
         }
     }

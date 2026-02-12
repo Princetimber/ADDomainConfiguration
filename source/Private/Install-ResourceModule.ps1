@@ -105,6 +105,10 @@ function Install-ResourceModule {
             }
 
             Write-ToLog -Message "Repository validated: PSGallery is registered (URI: $($repository.Uri))." -Level DEBUG
+
+            # Set PSGallery as trusted once before processing modules
+            Write-ToLog -Message "Setting PSGallery as trusted repository..." -Level DEBUG
+            Set-PSResourceRepositoryWrapper -Name PSGallery -Trusted
         } catch {
             Write-ToLog -Message "Repository validation error: $($_.Exception.Message)" -Level ERROR
             throw
@@ -126,10 +130,6 @@ function Install-ResourceModule {
                         $modulesSkipped++
                         continue
                     }
-
-                    # Set PSGallery as trusted to avoid prompts
-                    Write-ToLog -Message "Setting PSGallery as trusted repository..." -Level DEBUG
-                    Set-PSResourceRepositoryWrapper -Name PSGallery -Trusted
 
                     # Install module
                     Write-ToLog -Message "Installing module '$moduleName' from PSGallery (Scope: AllUsers)..." -Level INFO

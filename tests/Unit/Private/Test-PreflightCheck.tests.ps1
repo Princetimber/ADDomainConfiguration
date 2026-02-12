@@ -13,7 +13,7 @@ AfterAll {
     Get-Module -Name $script:dscModuleName -All | Remove-Module -Force
 }
 
-Describe 'Start-PreflightCheck' -Tag 'Unit' {
+Describe 'Test-PreflightCheck' -Tag 'Unit' {
 
     BeforeEach {
         InModuleScope -ModuleName $script:dscModuleName {
@@ -21,12 +21,12 @@ Describe 'Start-PreflightCheck' -Tag 'Unit' {
         }
     }
 
-    Context 'When running on non-Windows platform' -Skip:(-not $IsWindows) {
+    Context 'When running on non-Windows platform' -Skip:($IsWindows) {
         It 'Should return false when $IsWindows is false' {
             InModuleScope -ModuleName $script:dscModuleName {
                 Mock Get-WindowsFeatureWrapper -MockWith { return $null }
 
-                $result = Start-PreflightCheck
+                $result = Test-PreflightCheck
                 $result | Should -Contain $false
             }
         }
@@ -35,7 +35,7 @@ Describe 'Start-PreflightCheck' -Tag 'Unit' {
             InModuleScope -ModuleName $script:dscModuleName {
                 Mock Get-WindowsFeatureWrapper -MockWith { return $null }
 
-                Start-PreflightCheck
+                Test-PreflightCheck
 
                 Should -Invoke Write-ToLog -Times 1 -Exactly -ParameterFilter {
                     $Message -like '*Platform check failed*' -and $Level -eq 'ERROR'
@@ -47,19 +47,19 @@ Describe 'Start-PreflightCheck' -Tag 'Unit' {
     Context 'When validating MinDiskGB parameter' {
         It 'Should throw when MinDiskGB is less than 1' {
             InModuleScope -ModuleName $script:dscModuleName {
-                { Start-PreflightCheck -MinDiskGB 0 } | Should -Throw
+                { Test-PreflightCheck -MinDiskGB 0 } | Should -Throw
             }
         }
 
         It 'Should throw when MinDiskGB is greater than 1000' {
             InModuleScope -ModuleName $script:dscModuleName {
-                { Start-PreflightCheck -MinDiskGB 1001 } | Should -Throw
+                { Test-PreflightCheck -MinDiskGB 1001 } | Should -Throw
             }
         }
 
         It 'Should throw when MinDiskGB is negative' {
             InModuleScope -ModuleName $script:dscModuleName {
-                { Start-PreflightCheck -MinDiskGB -5 } | Should -Throw
+                { Test-PreflightCheck -MinDiskGB -5 } | Should -Throw
             }
         }
     }
@@ -67,14 +67,14 @@ Describe 'Start-PreflightCheck' -Tag 'Unit' {
     Context 'When verifying function metadata' {
         It 'Should have CmdletBinding attribute' {
             InModuleScope -ModuleName $script:dscModuleName {
-                $cmd = Get-Command -Name Start-PreflightCheck
+                $cmd = Get-Command -Name Test-PreflightCheck
                 $cmd.CmdletBinding | Should -BeTrue
             }
         }
 
         It 'Should have OutputType of bool' {
             InModuleScope -ModuleName $script:dscModuleName {
-                $cmd = Get-Command -Name Start-PreflightCheck
+                $cmd = Get-Command -Name Test-PreflightCheck
                 $cmd.OutputType.Type.Name | Should -Contain 'Boolean'
             }
         }

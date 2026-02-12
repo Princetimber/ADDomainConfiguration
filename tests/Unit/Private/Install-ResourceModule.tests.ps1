@@ -69,7 +69,7 @@ Describe 'Install-ResourceModule' -Tag 'Unit' {
 
                 Should -Invoke Get-ModuleWrapper -Times 1 -Exactly
                 Should -Invoke Install-PSResourceWrapper -Times 0 -Exactly
-                Should -Invoke Set-PSResourceRepositoryWrapper -Times 0 -Exactly
+                Should -Invoke Set-PSResourceRepositoryWrapper -Times 1 -Exactly
             }
         }
     }

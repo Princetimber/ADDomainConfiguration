@@ -23,7 +23,7 @@ function Invoke-ADDSForest {
            - Runs Test-PreflightCheck (platform, elevation, features, disk space)
            - Installs required modules (Invoke-ResourceModule)
            - Installs AD features (Install-ADModule)
-           - Validates paths (Test-IfPathExistOrNot)
+           - Validates paths (Assert-PathExistence)
            - Prompts for safe mode password if needed (Get-SafeModePassword)
            - Creates the forest (Install-ADDSForest)
         3. Returns operation summary if PassThru requested

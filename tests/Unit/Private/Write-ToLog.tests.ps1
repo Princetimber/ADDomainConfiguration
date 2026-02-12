@@ -1,9 +1,12 @@
 #Requires -Version 7.0
 
 BeforeAll {
-    $script:dscModuleName = 'TemplateModule'
+    $script:dscModuleName = 'Invoke-ADDSForest'
 
-    Import-Module -Name $script:dscModuleName
+    $sourcePath = Join-Path -Path $PSScriptRoot -ChildPath '..' -AdditionalChildPath '..', '..', 'source'
+    $manifestPath = Join-Path -Path $sourcePath -ChildPath "$script:dscModuleName.psd1"
+
+    Import-Module -Name $manifestPath -Force -ErrorAction Stop
 }
 
 AfterAll {

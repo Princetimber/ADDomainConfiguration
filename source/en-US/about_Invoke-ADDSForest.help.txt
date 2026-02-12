@@ -1,0 +1,55 @@
+TOPIC
+    about_Invoke-ADDSForest
+
+SHORT DESCRIPTION
+    PowerShell module for creating a new Active Directory Domain Services forest
+    with secure logging and audit compliance support.
+
+LONG DESCRIPTION
+    The Invoke-ADDSForest module automates the creation of a new AD DS forest
+    on Windows Server. It provides:
+
+    - Comprehensive preflight validation (platform, elevation, features, disk space)
+    - Idempotent installation of Windows features and PowerShell modules
+    - Secure Safe Mode password handling via SecureString
+    - Full SupportsShouldProcess (-WhatIf, -Confirm) on the public entry point
+    - Structured logging via native PowerShell streams (Write-Verbose, Write-Warning, etc.)
+    - Detailed error messages with troubleshooting tips
+
+COMMANDS
+    Invoke-ADDSForest (Public)
+        Creates a new AD DS forest. This is the user-facing entry point that
+        orchestrates validation, feature installation, and forest creation.
+        Supports -WhatIf, -Confirm, -Force, and -PassThru.
+
+    Private helper functions (not exported):
+        New-ADDSForest           - Core forest creation logic
+        Start-PreflightCheck     - Validates platform, elevation, features, disk space
+        Install-ADModule         - Installs AD-Domain-Services Windows feature
+        Install-ResourceModule   - Installs required PowerShell modules from PSGallery
+        Get-SafeModePassword     - Securely obtains DSRM password
+        New-EnvPath              - Joins file system paths
+        Test-IfPathExistOrNot    - Batch validates path existence
+        Write-ToLog              - Structured logging wrapper
+
+EXAMPLES
+    Example 1: Preview forest creation (safe, no changes)
+        Invoke-ADDSForest -DomainName "contoso.com" -WhatIf
+
+    Example 2: Create a forest with DNS
+        Invoke-ADDSForest -DomainName "corp.example.com" -InstallDNS
+
+    Example 3: Full automation with PassThru
+        $result = Invoke-ADDSForest -DomainName "contoso.com" `
+                    -DatabasePath "D:\NTDS" -LogPath "E:\ADLogs" `
+                    -SysvolPath "D:\SYSVOL" -InstallDNS -Force -PassThru
+
+NOTES
+    This module requires PowerShell 7.0 or later and Windows Server.
+
+    SupportsShouldProcess (-WhatIf, -Confirm) is applied only on the public
+    Invoke-ADDSForest function. Private functions trust the caller's decision.
+
+SEE ALSO
+    Invoke-ADDSForest
+    Write-ToLog

@@ -62,7 +62,7 @@ Follow the patterns in `Get-Greeting.ps1` (read-only) and `Export-Greeting.ps1` 
 ## Directory Structure
 
 ```
-{{MODULE_NAME}}/
+Invoke-ADDSForest/
 ├── .github/
 │   ├── copilot-instructions.md           # GitHub Copilot instructions
 │   └── workflows/
@@ -71,10 +71,10 @@ Follow the patterns in `Get-Greeting.ps1` (read-only) and `Export-Greeting.ps1` 
 ├── .vscode/
 │   └── tasks.json                        # VS Code build/test tasks
 ├── source/
-│   ├── {{MODULE_NAME}}.psd1              # Module manifest
-│   ├── {{MODULE_NAME}}.psm1              # Root module (dot-sources functions)
+│   ├── Invoke-ADDSForest.psd1              # Module manifest
+│   ├── Invoke-ADDSForest.psm1              # Root module (dot-sources functions)
 │   ├── en-US/
-│   │   └── about_{{MODULE_NAME}}.help.txt # About help file
+│   │   └── about_Invoke-ADDSForest.help.txt # About help file
 │   ├── Public/                           # Exported functions (one per file)
 │   │   ├── Get-Greeting.ps1              # Example read-only function
 │   │   └── Export-Greeting.ps1           # Example state-changing function
@@ -174,13 +174,13 @@ Invoke-Pester -CodeCoverage source/**/*.ps1
 
 | Placeholder | Description | Example |
 |-------------|-------------|---------|
-| `{{MODULE_NAME}}` | Module name | `Invoke-MyModule` |
-| `{{MODULE_DESCRIPTION}}` | Module description | `Storage management for Windows Server` |
-| `{{AUTHOR}}` | Author name | `John Doe` |
-| `{{COMPANY}}` | Company/organization | `Contoso Ltd` |
-| `{{MODULE_GUID}}` | Unique module GUID | `12345678-1234-1234-1234-123456789012` |
+| `Invoke-ADDSForest` | Module name | `Invoke-MyModule` |
+| `This module contains carefully curated PowerShell functions for installing a New domain in an AD Forest. It also allows the administrator to securely and efficiently manage logs for audit compliance` | Module description | `Storage management for Windows Server` |
+| `Olamide Olaleye` | Author name | `John Doe` |
+| `Fountview Enterprise Solutions` | Company/organization | `Contoso Ltd` |
+| `26363795-284e-42dd-b28d-af575c5ce98c` | Unique module GUID | `12345678-1234-1234-1234-123456789012` |
 
-Files named `TemplateModule.*` will be renamed to your actual module name.
+Files named `Invoke-ADDSForest.*` will be renamed to your actual module name.
 
 ## License
 

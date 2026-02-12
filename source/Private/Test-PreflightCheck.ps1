@@ -183,10 +183,8 @@ function Test-PreflightCheck {
                         $checksFailed++
                         throw $errorMsg
                     } elseif (-not $feature.Installed) {
-                        $errorMsg = "Required feature '$featureName' is available but not installed. Install it with: Install-WindowsFeature -Name $featureName"
-                        Write-ToLog -Message $errorMsg -Level ERROR
-                        $checksFailed++
-                        throw $errorMsg
+                        Write-ToLog -Message "Feature '$featureName' is available but not yet installed. Installation will be attempted." -Level WARN
+                        $checksPassed++
                     } else {
                         Write-ToLog -Message "Feature '$featureName' is installed." -Level DEBUG
                         $checksPassed++

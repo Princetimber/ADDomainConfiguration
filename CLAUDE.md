@@ -35,10 +35,10 @@ After cloning, run `Initialize-Template.ps1` to customize the template with your
 ## Module Structure (Sampler Layout)
 
 ```
-{{MODULE_NAME}}/
+Invoke-ADDSForest/
 ├── source/
-│   ├── {{MODULE_NAME}}.psd1      # Module manifest
-│   ├── {{MODULE_NAME}}.psm1      # Dot-sources Public/ and Private/
+│   ├── Invoke-ADDSForest.psd1      # Module manifest
+│   ├── Invoke-ADDSForest.psm1      # Dot-sources Public/ and Private/
 │   ├── Public/                   # Exported functions (one per file)
 │   ├── Private/                  # Internal helper functions (one per file)
 │   └── en-US/                    # Help files

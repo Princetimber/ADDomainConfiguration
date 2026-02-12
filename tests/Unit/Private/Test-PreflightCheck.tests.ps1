@@ -64,6 +64,52 @@ Describe 'Test-PreflightCheck' -Tag 'Unit' {
         }
     }
 
+    Context 'When validating required features' -Skip:(-not $IsWindows) {
+        It 'Should throw when feature is not found on server' {
+            InModuleScope -ModuleName $script:dscModuleName {
+                Mock Get-WindowsFeatureWrapper -MockWith { return $null }
+
+                { Test-PreflightCheck -RequiredFeatures @('AD-Domain-Services') } | Should -Throw -ExpectedMessage "*not found*"
+            }
+        }
+
+        It 'Should pass when feature is available but not yet installed' {
+            InModuleScope -ModuleName $script:dscModuleName {
+                Mock Get-WindowsFeatureWrapper -MockWith {
+                    return @{ Name = 'AD-Domain-Services'; Installed = $false }
+                }
+
+                $result = Test-PreflightCheck -RequiredFeatures @('AD-Domain-Services')
+                $result | Should -BeTrue
+            }
+        }
+
+        It 'Should log a warning when feature is available but not yet installed' {
+            InModuleScope -ModuleName $script:dscModuleName {
+                Mock Get-WindowsFeatureWrapper -MockWith {
+                    return @{ Name = 'AD-Domain-Services'; Installed = $false }
+                }
+
+                Test-PreflightCheck -RequiredFeatures @('AD-Domain-Services')
+
+                Should -Invoke Write-ToLog -Times 1 -Exactly -ParameterFilter {
+                    $Message -like '*available but not yet installed*' -and $Level -eq 'WARN'
+                }
+            }
+        }
+
+        It 'Should pass when feature is installed' {
+            InModuleScope -ModuleName $script:dscModuleName {
+                Mock Get-WindowsFeatureWrapper -MockWith {
+                    return @{ Name = 'AD-Domain-Services'; Installed = $true }
+                }
+
+                $result = Test-PreflightCheck -RequiredFeatures @('AD-Domain-Services')
+                $result | Should -BeTrue
+            }
+        }
+    }
+
     Context 'When verifying function metadata' {
         It 'Should have CmdletBinding attribute' {
             InModuleScope -ModuleName $script:dscModuleName {

@@ -1,68 +1,31 @@
 ﻿#Requires -Version 7.0
 
-
-
-
-function Test-IfPathExistOrNot {
+function Assert-PathExistence {
     <#
-.SYNOPSIS
-    Validates that all provided file system paths exist.
+    .SYNOPSIS
+        Validates that all provided file system paths exist.
 
-.DESCRIPTION
-    Test-IfPathExistOrNot is a validation helper function that verifies the existence
-    of one or more file system paths. Unlike fail-fast validation, this function uses
-    batch validation to collect ALL missing paths before throwing an error, providing
-    complete feedback in a single operation.
+    .DESCRIPTION
+        Assert-PathExistence is a validation helper that verifies the existence of one or more
+        file system paths. It uses batch validation to collect ALL missing paths before
+        throwing an error, providing complete feedback in a single operation.
 
-    The function logs each path validation attempt and provides detailed error messages
-    showing which paths are missing and which exist (for context). This approach improves
-    the user experience by allowing all path issues to be identified and resolved at once
-    rather than requiring multiple iterations.
+    .PARAMETER Paths
+        An array of file system paths to validate. Each path will be checked for existence.
+        Cannot be null or empty.
 
-    This function is intended to be called early in module operations to ensure all
-    required paths are available before proceeding with state-changing operations.
+    .OUTPUTS
+        None. Throws a terminating error if any paths are missing.
 
-.PARAMETER Paths
-    An array of file system paths to validate. Each path will be checked for existence.
-    Cannot be null or empty. Paths can be files, directories, or other file system objects.
+    .EXAMPLE
+        Assert-PathExistence -Paths 'C:\Windows\System32'
 
-.OUTPUTS
-    None
-    The function throws a terminating error if any paths are missing, or completes silently
-    if all paths exist.
+    .EXAMPLE
+        Assert-PathExistence -Paths @('C:\Program Files', 'C:\Users', 'C:\Windows')
 
-.EXAMPLE
-    Test-IfPathExistOrNot -Paths 'C:\Windows\System32'
-
-    Validates that the System32 directory exists. Throws if the path doesn't exist.
-
-.EXAMPLE
-    Test-IfPathExistOrNot -Paths @('C:\Program Files', 'C:\Users', 'C:\Windows')
-
-    Validates multiple critical Windows directories. If any are missing, all missing
-    paths will be reported in a single error message.
-
-.EXAMPLE
-    $requiredPaths = @(
-        'C:\ProgramData\MyApp\config.json',
-        'C:\ProgramData\MyApp\logs',
-        'C:\ProgramData\MyApp\data'
-    )
-    Test-IfPathExistOrNot -Paths $requiredPaths
-
-    Validates that all required application paths exist before proceeding with operations.
-    Uses batch validation to report all missing paths at once for efficient troubleshooting.
-
-.NOTES
-    Requirements:
-    - PowerShell 7.0+
-
-    This function is intended to be used internally by the module for validation purposes.
-    It performs batch validation, collecting all missing paths before throwing, which provides
-    better user experience than failing on the first missing path.
-
-    The function uses Test-PathWrapper internally to enable mocking in unit tests.
-#>
+    .NOTES
+        Uses Test-PathWrapper internally to enable mocking in unit tests.
+    #>
 
     [CmdletBinding()]
     [OutputType([void])]

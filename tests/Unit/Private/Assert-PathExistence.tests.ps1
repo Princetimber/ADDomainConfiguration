@@ -13,7 +13,7 @@ AfterAll {
     Get-Module -Name $script:dscModuleName -All | Remove-Module -Force
 }
 
-Describe 'Test-IfPathExistOrNot' -Tag 'Unit' {
+Describe 'Assert-PathExistence' -Tag 'Unit' {
 
     Context 'When all paths exist' {
         It 'Should complete silently for a single existing path' {
@@ -21,7 +21,7 @@ Describe 'Test-IfPathExistOrNot' -Tag 'Unit' {
                 Mock Write-ToLog
                 Mock Test-PathWrapper { return $true }
 
-                { Test-IfPathExistOrNot -Paths '/tmp/existing' } | Should -Not -Throw
+                { Assert-PathExistence -Paths '/tmp/existing' } | Should -Not -Throw
             }
         }
 
@@ -30,7 +30,7 @@ Describe 'Test-IfPathExistOrNot' -Tag 'Unit' {
                 Mock Write-ToLog
                 Mock Test-PathWrapper { return $true }
 
-                { Test-IfPathExistOrNot -Paths @('/tmp/path1', '/tmp/path2', '/tmp/path3') } | Should -Not -Throw
+                { Assert-PathExistence -Paths @('/tmp/path1', '/tmp/path2', '/tmp/path3') } | Should -Not -Throw
             }
         }
 
@@ -39,7 +39,7 @@ Describe 'Test-IfPathExistOrNot' -Tag 'Unit' {
                 Mock Write-ToLog
                 Mock Test-PathWrapper { return $true }
 
-                Test-IfPathExistOrNot -Paths @('/path/a', '/path/b')
+                Assert-PathExistence -Paths @('/path/a', '/path/b')
 
                 Should -Invoke Test-PathWrapper -Times 2 -Exactly
             }
@@ -50,7 +50,7 @@ Describe 'Test-IfPathExistOrNot' -Tag 'Unit' {
                 Mock Write-ToLog
                 Mock Test-PathWrapper { return $true }
 
-                Test-IfPathExistOrNot -Paths @('/tmp/valid')
+                Assert-PathExistence -Paths @('/tmp/valid')
 
                 Should -Invoke Write-ToLog -Times 1 -Exactly -ParameterFilter {
                     $Level -eq 'SUCCESS' -and $Message -like 'All*path(s) validated successfully'
@@ -65,7 +65,7 @@ Describe 'Test-IfPathExistOrNot' -Tag 'Unit' {
                 Mock Write-ToLog
                 Mock Test-PathWrapper { return $false }
 
-                { Test-IfPathExistOrNot -Paths '/tmp/nonexistent' } | Should -Throw '*Path validation failed*1 of 1 path(s) not found*'
+                { Assert-PathExistence -Paths '/tmp/nonexistent' } | Should -Throw '*Path validation failed*1 of 1 path(s) not found*'
             }
         }
 
@@ -78,7 +78,7 @@ Describe 'Test-IfPathExistOrNot' -Tag 'Unit' {
                     return $true
                 }
 
-                { Test-IfPathExistOrNot -Paths @('/tmp/exists', '/tmp/missing') } | Should -Throw '*Path validation failed*1 of 2 path(s) not found*'
+                { Assert-PathExistence -Paths @('/tmp/exists', '/tmp/missing') } | Should -Throw '*Path validation failed*1 of 2 path(s) not found*'
             }
         }
     }
@@ -89,7 +89,7 @@ Describe 'Test-IfPathExistOrNot' -Tag 'Unit' {
                 Mock Write-ToLog
                 Mock Test-PathWrapper { return $false }
 
-                { Test-IfPathExistOrNot -Paths @('/tmp/miss1', '/tmp/miss2', '/tmp/miss3') } | Should -Throw '*3 of 3 path(s) not found*'
+                { Assert-PathExistence -Paths @('/tmp/miss1', '/tmp/miss2', '/tmp/miss3') } | Should -Throw '*3 of 3 path(s) not found*'
             }
         }
 
@@ -105,7 +105,7 @@ Describe 'Test-IfPathExistOrNot' -Tag 'Unit' {
                 $errorThrown = $false
                 $errorMessage = ''
                 try {
-                    Test-IfPathExistOrNot -Paths @('/tmp/good', '/tmp/bad1', '/tmp/bad2')
+                    Assert-PathExistence -Paths @('/tmp/good', '/tmp/bad1', '/tmp/bad2')
                 } catch {
                     $errorThrown = $true
                     $errorMessage = $_.Exception.Message
@@ -123,13 +123,13 @@ Describe 'Test-IfPathExistOrNot' -Tag 'Unit' {
     Context 'When validating parameters' {
         It 'Should throw on null Paths parameter' {
             InModuleScope -ModuleName $script:dscModuleName {
-                { Test-IfPathExistOrNot -Paths $null } | Should -Throw
+                { Assert-PathExistence -Paths $null } | Should -Throw
             }
         }
 
         It 'Should throw on empty string Paths parameter' {
             InModuleScope -ModuleName $script:dscModuleName {
-                { Test-IfPathExistOrNot -Paths '' } | Should -Throw
+                { Assert-PathExistence -Paths '' } | Should -Throw
             }
         }
     }
@@ -140,7 +140,7 @@ Describe 'Test-IfPathExistOrNot' -Tag 'Unit' {
                 Mock Write-ToLog
                 Mock Test-PathWrapper { throw 'Access denied' }
 
-                { Test-IfPathExistOrNot -Paths '/tmp/inaccessible' } | Should -Throw '*Path validation failed*1 of 1 path(s) not found*'
+                { Assert-PathExistence -Paths '/tmp/inaccessible' } | Should -Throw '*Path validation failed*1 of 1 path(s) not found*'
             }
         }
 
@@ -149,7 +149,7 @@ Describe 'Test-IfPathExistOrNot' -Tag 'Unit' {
                 Mock Write-ToLog
                 Mock Test-PathWrapper { throw 'Permission error' }
 
-                try { Test-IfPathExistOrNot -Paths '/tmp/error-path' } catch { $null = $_ <# Expected error in test #> }
+                try { Assert-PathExistence -Paths '/tmp/error-path' } catch { $null = $_ <# Expected error in test #> }
 
                 Should -Invoke Write-ToLog -Times 1 -Exactly -ParameterFilter {
                     $Level -eq 'ERROR' -and $Message -like "Error checking path '/tmp/error-path':*"
@@ -167,7 +167,7 @@ Describe 'Test-IfPathExistOrNot' -Tag 'Unit' {
                 }
 
                 try {
-                    Test-IfPathExistOrNot -Paths @('/tmp/error', '/tmp/ok')
+                    Assert-PathExistence -Paths @('/tmp/error', '/tmp/ok')
                 } catch { $null = $_ <# Expected error in test #> }
 
                 Should -Invoke Test-PathWrapper -Times 2 -Exactly
@@ -181,7 +181,7 @@ Describe 'Test-IfPathExistOrNot' -Tag 'Unit' {
                 Mock Write-ToLog
                 Mock Test-PathWrapper { return $true }
 
-                Test-IfPathExistOrNot -Paths @('/tmp/a', '/tmp/b')
+                Assert-PathExistence -Paths @('/tmp/a', '/tmp/b')
 
                 Should -Invoke Write-ToLog -Times 1 -Exactly -ParameterFilter {
                     $Level -eq 'INFO' -and $Message -eq 'Starting path validation for 2 path(s)'
@@ -194,7 +194,7 @@ Describe 'Test-IfPathExistOrNot' -Tag 'Unit' {
                 Mock Write-ToLog
                 Mock Test-PathWrapper { return $true }
 
-                Test-IfPathExistOrNot -Paths @('/tmp/first', '/tmp/second')
+                Assert-PathExistence -Paths @('/tmp/first', '/tmp/second')
 
                 Should -Invoke Write-ToLog -Times 1 -Exactly -ParameterFilter {
                     $Level -eq 'DEBUG' -and $Message -eq 'Path verified: /tmp/first'
@@ -210,7 +210,7 @@ Describe 'Test-IfPathExistOrNot' -Tag 'Unit' {
                 Mock Write-ToLog
                 Mock Test-PathWrapper { return $false }
 
-                try { Test-IfPathExistOrNot -Paths @('/tmp/gone') } catch { $null = $_ <# Expected error in test #> }
+                try { Assert-PathExistence -Paths @('/tmp/gone') } catch { $null = $_ <# Expected error in test #> }
 
                 Should -Invoke Write-ToLog -Times 1 -Exactly -ParameterFilter {
                     $Level -eq 'ERROR' -and $Message -eq 'Path not found: /tmp/gone'

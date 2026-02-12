@@ -56,7 +56,7 @@ function New-ADDSForest {
         Must be on an NTFS volume. Recommended: Dedicated volume separate from database.
         Default: $env:SYSTEMDRIVE\Windows\NTDS
 
-    .PARAMETER SYSVOLPATH
+    .PARAMETER SysvolPath
         The path for the SYSVOL folder (stores Group Policy templates and logon scripts).
         Must be on an NTFS volume.
         Default: $env:SYSTEMDRIVE\Windows
@@ -88,7 +88,7 @@ function New-ADDSForest {
     .EXAMPLE
         $securePass = ConvertTo-SecureString 'P@ssw0rd123!' -AsPlainText -Force
         New-ADDSForest -DomainName "contoso.com" -SafeModeAdministratorPassword $securePass `
-                       -DatabasePath "D:\NTDS" -LogPath "E:\Logs" -SYSVOLPATH "D:\SYSVOL" `
+                       -DatabasePath "D:\NTDS" -LogPath "E:\Logs" -SysvolPath "D:\SYSVOL" `
                        -InstallDNS -Confirm:$false
 
         Creates a new forest with custom paths for database, logs, and SYSVOL on separate volumes.
@@ -195,7 +195,7 @@ function New-ADDSForest {
                     ForEach-Object { Split-Path -Path $_ -Parent } |
                         Where-Object { -not [string]::IsNullOrEmpty($_) } |
                             Select-Object -Unique
-            Start-PreflightCheck -RequiredFeatures @('AD-Domain-Services') -RequiredPaths $pathsToValidate
+            Test-PreflightCheck -RequiredFeatures @('AD-Domain-Services') -RequiredPaths $pathsToValidate
 
             # Install required modules and features
             Write-ToLog -Message "Installing required AD module..." -Level INFO

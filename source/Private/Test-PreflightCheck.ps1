@@ -1,6 +1,6 @@
 ﻿#Requires -Version 7.0
 
-function Start-PreflightCheck {
+function Test-PreflightCheck {
     <#
     .SYNOPSIS
         Performs preflight checks to ensure the system is ready for domain controller installation.
@@ -66,8 +66,6 @@ function Start-PreflightCheck {
 
     [CmdletBinding()]
     [OutputType([bool])]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '',
-        Justification = 'Read-only validation function. Does not change system state; only queries and reports prerequisites.')]
     param (
         [Parameter()]
         [ValidateNotNull()]
@@ -185,8 +183,10 @@ function Start-PreflightCheck {
                         $checksFailed++
                         throw $errorMsg
                     } elseif (-not $feature.Installed) {
-                        Write-ToLog -Message "Feature '$featureName' is not installed (but is available)." -Level WARN
+                        $errorMsg = "Required feature '$featureName' is available but not installed. Install it with: Install-WindowsFeature -Name $featureName"
+                        Write-ToLog -Message $errorMsg -Level ERROR
                         $checksFailed++
+                        throw $errorMsg
                     } else {
                         Write-ToLog -Message "Feature '$featureName' is installed." -Level DEBUG
                         $checksPassed++

@@ -19,7 +19,7 @@ Describe 'New-ADDSForest' -Tag 'Unit' {
         InModuleScope -ModuleName $script:dscModuleName {
             # Mock all internal dependencies to prevent any real system operations
             Mock Write-ToLog -MockWith {}
-            Mock Start-PreflightCheck -MockWith { return $true }
+            Mock Test-PreflightCheck -MockWith { return $true }
             Mock Install-ADModule -MockWith {}
             Mock Install-ResourceModule -MockWith {}
             Mock New-EnvPath -MockWith {
@@ -37,13 +37,13 @@ Describe 'New-ADDSForest' -Tag 'Unit' {
     }
 
     Context 'When creating a forest with valid parameters' {
-        It 'Should call Start-PreflightCheck' {
+        It 'Should call Test-PreflightCheck' {
             InModuleScope -ModuleName $script:dscModuleName {
                 $secPwd = [System.Security.SecureString]::new()
                 'P@ss1'.ToCharArray() | ForEach-Object { $secPwd.AppendChar($_) }
                 New-ADDSForest -DomainName 'contoso.com' -SafeModeAdministratorPassword $secPwd
 
-                Should -Invoke Start-PreflightCheck -Times 1 -Exactly
+                Should -Invoke Test-PreflightCheck -Times 1 -Exactly
             }
         }
 
@@ -140,9 +140,9 @@ Describe 'New-ADDSForest' -Tag 'Unit' {
     }
 
     Context 'When a step fails' {
-        It 'Should throw an enhanced error when Start-PreflightCheck throws' {
+        It 'Should throw an enhanced error when Test-PreflightCheck throws' {
             InModuleScope -ModuleName $script:dscModuleName {
-                Mock Start-PreflightCheck -MockWith { throw 'Preflight failed' }
+                Mock Test-PreflightCheck -MockWith { throw 'Preflight failed' }
 
                 $secPwd = [System.Security.SecureString]::new()
                 'P@ss1'.ToCharArray() | ForEach-Object { $secPwd.AppendChar($_) }
